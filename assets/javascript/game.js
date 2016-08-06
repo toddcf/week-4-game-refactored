@@ -1,18 +1,44 @@
 $( document ).ready(function() {
 
-	// This is the entire game:
+	// Global Variables.
+		// One object for all crystals...
+		var crystal = {
+			// ...and a sub-object for each different color:
+			blue: {
+				name: "Blue",
+				value: 0
+			},
+			green: {
+				name: "Green",
+				value: 0
+			},
+			red: {
+				name: "Red",
+				value: 0
+			},
+			violet: {
+				name: "Violet",
+				value: 0
+			}
+		};
+
+		// Scores (Current and Target)
+		var currentScore	= 0;
+		var targetScore		= 0;
+
+		// Wins and Losses
+		var winCount 		= 0;
+		var lossCount		= 0;
+
+	// Functions.
 	crystalCollector();
 	function crystalCollector() {
-
-	// Declare variables that will NOT reset each time the game starts over.
-	var wins = 0;
-
-	var losses = 0;
 
 	// Displays user's score on the screen.
 	$('#yourWins').text(wins);
 	$('#yourLosses').text(losses);
 
+	// Main Process (where functions are called.)
 	// This is the reset point each time game starts over.
 	newGame();
 	function newGame() {

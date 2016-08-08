@@ -1,9 +1,10 @@
 $( document ).ready(function() {
 
 	// Global Variables.
+
 		// One object for all crystals...
 		var crystal = {
-			// ...and a sub-object for each different color:
+			// ...and a sub-object for each color:
 			blue: {
 				name: "Blue",
 				value: 0
@@ -31,155 +32,110 @@ $( document ).ready(function() {
 		var lossCount		= 0;
 
 	// Functions.
-	crystalCollector();
-	function crystalCollector() {
 
-	// Displays user's score on the screen.
-	$('#yourWins').text(wins);
-	$('#yourLosses').text(losses);
+		// Helper function for getting random numbers.
+		// This variable can be applied to each of the crystals, plus the Target Score.
+		var getRandom = function(min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+
+		// Starts (and restarts) the game:
+		var startGame = function() {
+			
+			// Reset current score.
+			currentScore = 0;
+			
+			// Set a new target score (between 19 and 120).
+			targetScore = getRandom(19, 120);
+			
+			// Set different values for each of the crystals (between 1 and 12).
+			crystal.blue.value 		= getRandom(1, 12);
+			crystal.green.value 	= getRandom(1, 12);
+			crystal.red.value 		= getRandom(1, 12);
+			crystal.violet.value 	= getRandom(1, 12);
+			
+			// Test values:
+			console.log("Target Score: "	+ targetScore);
+			console.log("Blue: "			+ crystal.blue.value);
+			console.log("Green: "			+ crystal.green.value);
+			console.log("Red: "				+ crystal.red.value);
+			console.log("Violet: "			+ crystal.violet.value);
+			
+			// Change HTML to reflect all changes.
+			$("#yourScore").html(currentScore);
+			$("#targetScore").html(targetScore);
+
+		}
+
+		// Respond to clicks on the crystals:
+			var addValues = function(crystal) {
+				currentScore = currentScore + crystal.value;
+
+				// Test:
+				console.log("Your Score: " + currentScore);
+
+				// Change HTML to reflect current score:
+				$("#yourScore").html(currentScore);
+
+				// Call checkWin:
+				checkWin();
+			}
+		
+		// Check if user won or lost, then reset game.
+		var checkWin = function() {
+			// Is currentScore now larger than targetScore?
+			if (currentScore > targetScore) {
+				alert("You lost -- the walls caved in. Start over.");
+				console.log("You lost.");
+
+				// Add score to Loss Counters.
+				lossCount++;
+
+				// Display to HTML.
+				// This has to come *after* lossCount has been updated or else the change will not be reflected.
+				$("#lossCount").html(lossCount);
+
+				// Restart Game
+				startGame();
+			}
+
+			else if (currentScore == targetScore) {
+				alert('You won! You escaped with the crystals and your life! Let\'s go to another cave and collect some more crystals...');
+				console.log("You won!");
+
+				// Add score to Win Counter.
+				winCount++;
+
+				// Display to HTML.
+				// This has to come *after* winCount has been updated or else the change will not be reflected.
+				$("#winCount").html(winCount);
+
+				// Restart Game
+				startGame();
+			}
+		}
+
 
 	// Main Process (where functions are called.)
-	// This is the reset point each time game starts over.
-	newGame();
-	function newGame() {
-		
-		// Chooses a random number between 19 and 120.
-		var maxValue = Math.floor(Math.random() * (120 - 19)) + 19;
-			// Displays the maxValue to the screen.
-			$('#maxValue').text(maxValue);
 
-		// Assigns a variable for each crystal.
-		// Each new game, each crystal is assigned a new random number between 1 and 12.
-		var blueCrystal = Math.floor(Math.random() * (12 - 1)) + 1;
-			console.log(blueCrystal);
+		// Starts the game the first time:
+		startGame();
 
-		var greenCrystal = Math.floor(Math.random() * (12 - 1)) + 1;
-			console.log(greenCrystal);
-
-		var redCrystal = Math.floor(Math.random() * (12 - 1)) + 1;
-			console.log(redCrystal);
-
-		var violetCrystal = Math.floor(Math.random() * (12 - 1)) + 1;
-			console.log(violetCrystal);
-
-		// Total value of crystals the user is holding:
-		var counter = 0
-			// Displays total value of crystals the user is holding:
-			$('#yourNumber').text(counter);
-
-		// When the blue crystal is clicked, its current value is added to the counter.
-		$('#blue').click(function() {
-			counter = counter + blueCrystal;
-			$('#yourNumber').text(counter);
-			
-			if (counter == maxValue) {
-				alert('You won! You escaped with the crystals and your life! Let\'s go to another cave and collect some more crystals...');
-				wins = wins + 1;
-				$('#yourWins').text(wins);
-				$("blueCrystal").empty();
-				$("greenCrystal").empty();
-				$("redCrystal").empty();
-				$("violetCrystal").empty();
-				newGame();
-			}
-
-			else if(counter > maxValue) {
-				alert('You lost -- the walls caved in. Start over.');
-				losses = losses + 1;
-				$('#yourLosses').text(losses);
-				$("blueCrystal").empty();
-				$("greenCrystal").empty();
-				$("redCrystal").empty();
-				$("violetCrystal").empty();
-				newGame();
-			}
+		// Click Events for each crystal.
+		$("#blue").click(function() {
+			addValues(crystal.blue);
 		});
 
-		// When the green crystal is clicked, its current value is added to the counter.
-		$('#green').click(function() {
-			counter = counter + greenCrystal;
-			$('#yourNumber').text(counter);
-		
-			if (counter == maxValue) {
-				alert('You won! You escaped with the crystals and your life! Let\'s go to another cave and collect some more crystals...');
-				wins = wins + 1;
-				$('#yourWins').text(wins);
-				$("blueCrystal").empty();
-				$("greenCrystal").empty();
-				$("redCrystal").empty();
-				$("violetCrystal").empty();
-				newGame();
-			}
-
-			else if(counter > maxValue) {
-				alert('You lost -- the walls caved in. Start over.');
-				losses = losses + 1;
-				$('#yourLosses').text(losses);
-				$("blueCrystal").empty();
-				$("greenCrystal").empty();
-				$("redCrystal").empty();
-				$("violetCrystal").empty();
-				newGame();
-			}
+		$("#green").click(function() {
+			addValues(crystal.green);
 		});
 
-		// When the red crystal is clicked, its current value is added to the counter.
-		$('#red').click(function() {
-			counter = counter + redCrystal;
-			$('#yourNumber').text(counter);
-
-			if (counter == maxValue) {
-				alert('You won! You escaped with the crystals and your life! Let\'s go to another cave and collect some more crystals...');
-				wins = wins + 1;
-				$('#yourWins').text(wins);
-				$("blueCrystal").empty();
-				$("greenCrystal").empty();
-				$("redCrystal").empty();
-				$("violetCrystal").empty();
-				newGame();
-			}
-
-			else if(counter > maxValue) {
-				alert('You lost -- the walls caved in. Start over.');
-				losses = losses + 1;
-				$('#yourLosses').text(losses);
-				$("blueCrystal").empty();
-				$("greenCrystal").empty();
-				$("redCrystal").empty();
-				$("violetCrystal").empty();
-				newGame();
-			}
+		$("#red").click(function() {
+			addValues(crystal.red);
 		});
 
-		// When the violet crystal is clicked, its current value is added to the counter.
-		$('#violet').click(function() {
-			counter = counter + violetCrystal;
-			$('#yourNumber').text(counter);
-
-			if (counter == maxValue) {
-				alert('You won! You escaped with the crystals and your life! Let\'s go to another cave and collect some more crystals...');
-				wins = wins + 1;
-				$('#yourWins').text(wins);
-				$("blueCrystal").empty();
-				$("greenCrystal").empty();
-				$("redCrystal").empty();
-				$("violetCrystal").empty();
-				newGame();
-			}
-
-			else if(counter > maxValue) {
-				alert('You lost -- the walls caved in. Start over.');
-				losses = losses + 1;
-				$('#yourLosses').text(losses);
-				$("blueCrystal").empty();
-				$("greenCrystal").empty();
-				$("redCrystal").empty();
-				$("violetCrystal").empty();
-				newGame();
-			}
-		});	 	
-	};		
-		
-	};
+		$("#violet").click(function() {
+			addValues(crystal.violet);
+		});
 
 });
